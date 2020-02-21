@@ -37,5 +37,6 @@ jobs:
   deploy:
     needs: build
     if: github.event_name == 'push'
+    steps:
       - name: Release Maven Packge
         run: ./mvnw deploy -Dregistry=https://maven.pkg.github.com/hypnoticocelot -Dtoken=${{ secrets.GITHUB_TOKEN }}
