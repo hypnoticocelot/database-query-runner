@@ -29,8 +29,5 @@ jobs:
         if: steps.cache-maven-packages.outputs.cache-hit != 'true'
         run: ./mvnw dependency:go-offline
 
-      - name: Test and package
-        run: ./mvnw -o package
-
-      - name: Release Maven Packge
-        run: ./mvnw deploy -DaltDeploymentRepository=github::https://maven.pkg.github.com/hypnoticocelot -Dtoken=${{ secrets.GITHUB_TOKEN }}
+      - name: Test
+        run: ./mvnw -o verify
