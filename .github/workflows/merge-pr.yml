@@ -1,23 +1,22 @@
-name: Java CI
+name: Merge Pull Request
 
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out
+        uses: actions/checkout@v2
 
-      - name: Set up JDK 11
+      - name: Set up Java
         uses: actions/setup-java@v1
         with:
           java-version: '11'
 
-      - name: Cache Maven packages
+      - name: Cache dependencies
         id: cache-maven-packages
         uses: actions/cache@v1
         with:
@@ -26,18 +25,12 @@ jobs:
           restore-keys: |
             maven-repo-cache-
 
-      - name: Download Maven Dependencies
+      - name: Fetch dependencies
         if: steps.cache-maven-packages.outputs.cache-hit != 'true'
         run: ./mvnw dependency:go-offline
 
-      - name: Build with Maven
+      - name: Test and package
         run: ./mvnw -o package
 
-  # Release when merging to `master`
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push'
-    steps:
       - name: Release Maven Packge
         run: ./mvnw deploy -Dregistry=https://maven.pkg.github.com/hypnoticocelot -Dtoken=${{ secrets.GITHUB_TOKEN }}
