@@ -33,7 +33,7 @@ jobs:
     - name: Build with Maven
       run: ./mvnw -o package
 
+    # Release when merging to `master`
     -name: Release Maven Packge
-      # Release only when merging to `master`
       if: github.event_name == 'push'
       run: ./mvnw deploy -Dregistry=https://maven.pkg.github.com/hypnoticocelot -Dtoken=${{ secrets.GITHUB_TOKEN }}
